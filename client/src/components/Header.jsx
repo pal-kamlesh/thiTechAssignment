@@ -5,17 +5,17 @@ import {
   NavbarLink,
   NavbarToggle,
 } from "flowbite-react";
-import { useDispatch } from "react-redux";
-import { handleLogout } from "../redux/user/userSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../App";
+import { HiAcademicCap, HiUsers, HiChartBar } from "react-icons/hi";
 
 export default function Header() {
-  const dispatch = useDispatch();
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   function logUserOut() {
-    dispatch(handleLogout());
+    logout();
     navigate("/login");
   }
 
@@ -23,36 +23,62 @@ export default function Header() {
     <Navbar
       fluid
       rounded
-      className="min-h-[4rem] sticky top-0 z-10 col-[1/-1] row-[1]  bg-sky-500 text-black"
+      className="min-h-[4rem] sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-purple-700 shadow-lg"
     >
-      <NavbarBrand as="a" href="https://flowbite-react.com">
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          FeedBucket
+      <NavbarBrand as={Link} to="/" className="flex items-center space-x-3">
+        <HiAcademicCap className="h-8 w-8 text-white" />
+        <span className="self-center whitespace-nowrap text-2xl font-bold text-white">
+          EduManage Pro
         </span>
       </NavbarBrand>
-      <NavbarToggle />
+      <NavbarToggle className="text-white hover:bg-blue-700" />
       <NavbarCollapse>
         <NavbarLink
           as="div"
           onClick={() => navigate("/")}
           active={pathname === "/" ? true : false}
-          className="text-xl"
+          className="cursor-pointer text-lg font-medium"
         >
-          <div className="text-white hover:text-black">Home</div>
-        </NavbarLink>
-        <NavbarLink
-          as="div"
-          onClick={logUserOut}
-          active={pathname === "/login" ? true : false}
-          className="cursor-pointer text-xl"
-        >
-          <div className="text-white hover:text-black">
-            {pathname === "/login" ? "Login" : "Logout"}
+          <div className="text-white hover:text-blue-200 transition-colors flex items-center space-x-2">
+            <HiChartBar className="h-5 w-5" />
+            <span>Home</span>
           </div>
         </NavbarLink>
-        <Link to="/students" className="nav-link">
-          Student Management
-        </Link>
+
+        <NavbarLink
+          as="div"
+          onClick={() => navigate("/students")}
+          active={pathname === "/students" ? true : false}
+          className="cursor-pointer text-lg font-medium"
+        >
+          <div className="text-white hover:text-blue-200 transition-colors flex items-center space-x-2">
+            <HiUsers className="h-5 w-5" />
+            <span>Students</span>
+          </div>
+        </NavbarLink>
+
+        {currentUser ? (
+          <NavbarLink
+            as="div"
+            onClick={logUserOut}
+            className="cursor-pointer text-lg font-medium"
+          >
+            <div className="text-white hover:text-red-200 transition-colors">
+              Logout
+            </div>
+          </NavbarLink>
+        ) : (
+          <NavbarLink
+            as="div"
+            onClick={() => navigate("/login")}
+            active={pathname === "/login" ? true : false}
+            className="cursor-pointer text-lg font-medium"
+          >
+            <div className="text-white hover:text-blue-200 transition-colors">
+              Login
+            </div>
+          </NavbarLink>
+        )}
       </NavbarCollapse>
     </Navbar>
   );

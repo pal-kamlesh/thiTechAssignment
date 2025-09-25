@@ -1,10 +1,9 @@
-import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../App";
 
 const ProtectedRoute = () => {
-  const { currentUser } = useSelector((store) => store.user);
+  const { currentUser } = useAuth();
   const location = useLocation();
-  let bool = true;
 
   return currentUser ? (
     <Outlet />
